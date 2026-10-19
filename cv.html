@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>CV — prodGLV</title>
+  <link rel="icon" href="img/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@400;700&family=Lexend:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#pw">Skip to content</a>
+<div class="grain"></div>
+
+<!-- ======== HEADER (same as the other pages) ======== -->
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="index.html"><img src="images/imglogoglv.png" alt="" width="34" height="34">prodGLV ✦</a>
+    <nav id="nav">
+      <a href="beats.html">Beats</a><a href="index.html#artwork">Artwork</a><a href="index.html#news">News</a><a href="index.html#about">About</a><a href="index.html#contact">Contact</a>
+    </nav>
+    <button class="burger" id="bg">Menu</button>
+  </div>
+</header>
+
+<!-- ======== PASSWORD-PROTECTED CV ======== -->
+<main class="cvp">
+  <div class="wrap">
+    <div class="cvbox">
+      <small class="cv-lab">Private page</small>
+      <h2>CV</h2>
+      <p>This page is protected. Enter the password I sent you to download my CV.</p>
+
+      <div id="lock">
+        <label class="cv-sr" for="pw">Password</label>
+        <input id="pw" class="cv-pw" type="password" autocomplete="off" placeholder="Password">
+        <button class="btn p" id="go">Unlock</button>
+        <p class="cv-msg" id="msg" role="status" aria-live="polite"></p>
+      </div>
+
+      <div id="done" hidden>
+        <p class="cv-ok">Unlocked ✓</p>
+        <div class="cta">
+          <a class="btn p" id="dl">Download CV ↓</a>
+          <a class="btn" id="view" target="_blank" rel="noopener" hidden>Open in browser ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ======== FOOTER ======== -->
+<footer>
+  <div class="wrap">
+    <span>© 2026 prodGLV ✦ All rights reserved</span>
+    <span class="fl"><a href="index.html#privacy">Privacy Policy</a><a href="index.html#cookies">Cookie Policy</a><a href="cv.html">CV</a></span>
+  </div>
+</footer>
+
+<script src="cv.js"></script>
+</body>
+</html>
