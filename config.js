@@ -45,6 +45,17 @@ const BEAT_OF_THE_WEEK = {
    beatstars : link of this beat on BeatStars                             */
 const BEATS = [
   {
+    title:     "Love Me",
+    bpm:       135,
+    key:       "Am",
+    genre:     "Hyperpop Trap",
+    colors:    ["#26308f", "#ff2bd6"],
+    cover:     "images/lovemecover.jpg",
+    audio:     "audio/lovemepreview.mp3",
+    youtube:   "https://www.youtube.com/@prodglv",
+    beatstars: "https://bsta.rs/95r2zP"
+  }
+  ,{
     title:     "2 AM In Toronto",
     bpm:       140,
     key:       "Cm",
