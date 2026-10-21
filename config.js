@@ -48,11 +48,11 @@ const BEATS = [
     title:     "Love Me",
     bpm:       135,
     key:       "Am",
-    genre:     "Hyperpop Trap",
+    genre:     "Travis Scott & Don Toliver",
     colors:    ["#26308f", "#ff2bd6"],
-    cover:     "images/lovemecover.jpg",
+    cover:     "images/lovemecover1.jpg",
     audio:     "audio/lovemepreview.mp3",
-    youtube:   "https://www.youtube.com/@prodglv",
+    youtube:   "https://youtu.be/dQ2LXXoEAUs",
     beatstars: "https://bsta.rs/95r2zP"
   }
   ,{
