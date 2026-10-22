@@ -2121,3 +2121,94 @@ body.has-player .bp { padding-bottom: 240px; }          /* keeps the last rows a
 .lb-nav button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .3); background: transparent; color: #fff; cursor: pointer; transition: background .3s; }
 .lb-nav button:hover { background: rgba(255, 255, 255, .2); }
 .pc { cursor: pointer; }
+
+/* ============================================================
+   "NEW" TAG + RANK-STYLE REVEAL (pairs with section 18 of script.js)
+   To undo: delete this whole block.
+   ============================================================ */
+
+/* --p is the position of the diagonal flash: -30% = before the card, 130% = after it */
+@property --p { syntax: "<percentage>"; inherits: true; initial-value: 130%; }
+@keyframes first-reveal { from { --p: -30%; } to { --p: 130%; } }
+
+/* when the card scrolls into view the flash crosses it and reveals it (once) */
+.card.first.rv.in { animation: first-reveal 2.0s cubic-bezier(.55, 0, .25, 1) .2s backwards; }
+
+.card.first .wt, .card.first .cover, .card.first .info {
+  -webkit-mask-image: linear-gradient(115deg, #000 calc(var(--p) - 3%), transparent var(--p));
+  mask-image: linear-gradient(115deg, #000 calc(var(--p) - 3%), transparent var(--p));
+}
+
+/* the metallic flash itself */
+.card.first::after {
+  content: ""; position: absolute; inset: 0; z-index: 6; pointer-events: none; mix-blend-mode: screen;
+  background:
+    linear-gradient(115deg, transparent calc(var(--p) - 26%), rgba(255, 255, 255, .55) calc(var(--p) - 25.5%), transparent calc(var(--p) - 24.5%)),
+    linear-gradient(115deg,
+      transparent calc(var(--p) - 18%),
+      rgba(170, 150, 255, .30) calc(var(--p) - 12%),
+      rgba(225, 232, 250, .75) calc(var(--p) - 5%),
+      #ffffff calc(var(--p) - 1.5%),
+      rgba(130, 110, 220, .9) var(--p),
+      transparent calc(var(--p) + 1%));
+}
+
+/* metallic NEW tag */
+.new-tag {
+  position: absolute; top: 12px; right: 12px; z-index: 3; overflow: hidden;
+  padding: 4px 11px; border-radius: 99px;
+  font-family: var(--h); font-weight: 700; font-size: 9px; letter-spacing: .16em; color: #0b0b10;
+  background: linear-gradient(135deg, #f4f6ff 0%, #aeb9d6 38%, #ffffff 52%, #8f9dc0 100%);
+  box-shadow: 0 0 12px rgba(190, 200, 255, .55), inset 0 1px 0 rgba(255, 255, 255, .8);
+}
+.new-tag::after {                                /* small shine that passes over the tag every few seconds */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, .95) 50%, transparent 65%);
+  transform: translateX(-120%); animation: tag-shine 3.6s ease-in-out 1.6s infinite;
+}
+@keyframes tag-shine { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+
+/* ============================================================
+   CV BUTTON IN THE HEADER  +  LIGHT FLASH RISING FROM BELOW
+   (the flash pairs with section 19 of script.js and the "NEW tag + reveal" block)
+   To undo: delete this whole block.
+   ============================================================ */
+
+/* ---------- "CV" button in the menu ---------- */
+nav a.nav-cv {
+  padding: 9px 18px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  color: var(--fg);
+  transition: background .35s, border-color .35s, color .35s;
+}
+nav a.nav-cv::after { display: none; }                      /* no underline: it is a button */
+nav a.nav-cv:hover, nav a.nav-cv:focus-visible { background: var(--grad); border-color: transparent; color: #fff; }
+
+@media (max-width: 820px) {
+  nav.open a.nav-cv { align-self: flex-start; }             /* inside the phone menu */
+}
+
+/* ---------- light that rises from under the beat to above it (also outside the card) ---------- */
+.rise-wrap {
+  position: absolute; left: 0; width: 100%; z-index: 20;
+  overflow: hidden;                        /* the light never makes the page scroll sideways */
+  pointer-events: none;
+  mix-blend-mode: screen;                  /* adds light on top of whatever is underneath */
+}
+.rise-beam {
+  position: absolute;
+  /* white core with a violet glow above and below; change the colours here */
+  background: linear-gradient(to top,
+    transparent 0%,
+    rgba(140, 90, 255, .30) 28%,
+    rgba(255, 255, 255, .95) 50%,
+    rgba(140, 90, 255, .30) 72%,
+    transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent);   /* soft sides */
+  mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent);
+  filter: blur(4px);
+  will-change: transform, opacity;
+}
+
+nav { align-items: center; }

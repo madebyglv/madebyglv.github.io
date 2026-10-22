@@ -616,3 +616,103 @@ seekBar.addEventListener("keydown", e => {            // keyboard: left / right 
   addEventListener("resize", () => { if (idx >= 0 && !busy) { rect = fit(ar); setBox(card, rect); setBox(ui, rect); } });
   ["wheel", "touchmove"].forEach(t => lb.addEventListener(t, e => e.preventDefault(), { passive: false }));   // page stays still behind the viewer
 })();
+
+/* ---------- 18. "NEW" TAG + RANK-STYLE REVEAL ON ONE BEAT ---------------
+   The chosen beat gets a metallic NEW tag and, when it scrolls into view,
+   it is revealed by a diagonal metallic flash (like a rank reveal).
+   NEW_BEAT is the position in BEATS (config.js): 0 = the first beat.
+   Set it to -1 to turn the effect off.                                     */
+const NEW_BEAT = 0;
+(function () {
+  const card = $(`#beatGrid .card[data-i="${NEW_BEAT}"]`);
+  if (!card) return;
+  card.classList.add("first");
+  card.querySelector(".cover").insertAdjacentHTML("beforeend", '<span class="new-tag">NEW</span>');
+})();
+
+/* ---------- 19. LIGHT FLASH RISING FROM BELOW (outside the card too) ----
+   When the NEW beat is revealed, a band of white/purple light rises from
+   under the card to above it, wider than the card, so it glows outside it.
+   Works together with section 18 (NEW tag + reveal). To turn it off,
+   delete this section.                                                      */
+(function () {
+  const card = $(`#beatGrid .card[data-i="${NEW_BEAT}"]`);
+  if (!card || reduceMotion) return;
+
+  function fire() {
+    const r = card.getBoundingClientRect(), sx = scrollX, sy = scrollY;
+    const SIDE = 90, H = 340, PAD = 300;                 // SIDE = how far the light spreads beside the card; H = thickness of the band
+    const wrap = document.createElement("div");
+    wrap.className = "rise-wrap";
+    wrap.style.top = (r.top + sy - PAD) + "px";
+    wrap.style.height = (r.height + PAD * 2) + "px";
+    const beam = document.createElement("div");
+    beam.className = "rise-beam";
+    beam.style.left = (r.left + sx - SIDE) + "px";
+    beam.style.width = (r.width + SIDE * 2) + "px";
+    beam.style.height = H + "px";
+    wrap.appendChild(beam);
+    document.body.appendChild(wrap);
+
+    const startY = PAD + r.height + 40 - H / 2;          // under the card
+    const endY   = PAD - 90 - H / 2;                     // above the card
+    beam.style.top = "0px";
+    beam.animate([
+      { transform: `translateY(${startY}px)`, opacity: 0 },
+      { transform: `translateY(${startY - (startY - endY) * .18}px)`, opacity: 1, offset: .18 },
+      { transform: `translateY(${startY - (startY - endY) * .82}px)`, opacity: 1, offset: .82 },
+      { transform: `translateY(${endY}px)`, opacity: 0 }
+    ], { duration: 1300, easing: "cubic-bezier(.45,0,.55,1)" }).finished.then(() => wrap.remove());
+  }
+
+  if (card.classList.contains("in")) { setTimeout(fire, 250); return; }
+  const mo = new MutationObserver(() => {
+    if (card.classList.contains("in")) { mo.disconnect(); setTimeout(fire, 250); }
+  });
+  mo.observe(card, { attributes: true, attributeFilter: ["class"] });
+})();
+
+/* ---------- 20. SWIPE THE BEATS CAROUSEL (phones and tablets) -----------
+   Drag the beats sideways with a finger: they follow your finger and snap
+   to the next / previous page. The arrows still work. Vertical scrolling
+   of the page is not affected. Mouse users keep using the arrows.          */
+(function () {
+  const grid = $("#beatGrid"), car = grid && grid.parentElement, ctl = $(".cc");
+  if (!car || !ctl) return;
+  const prev = ctl.children[0], next = ctl.children[2];
+  car.style.touchAction = "pan-y";                         // the browser keeps vertical scroll, we take horizontal
+
+  let sx = 0, sy = 0, dx = 0, t0 = 0, active = false, drag = false, base = "", lastDrag = 0;
+  const THRESHOLD = 70;                                    // pixels to drag before the page changes (a quick flick is enough too)
+
+  car.addEventListener("pointerdown", e => {
+    if (e.pointerType === "mouse") return;
+    active = true; drag = false; sx = e.clientX; sy = e.clientY; dx = 0; t0 = performance.now();
+  });
+  car.addEventListener("pointermove", e => {
+    if (!active) return;
+    dx = e.clientX - sx;
+    if (!drag) {
+      if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(e.clientY - sy)) return;
+      drag = true; base = grid.style.transform; grid.style.transition = "none";
+      $$("#beatGrid .card:not(.first)").forEach(c => c.classList.add("in"));          // neighbours are already visible while dragging
+      car.setPointerCapture(e.pointerId);
+    }
+    const atEdge = (dx > 0 && prev.disabled) || (dx < 0 && next.disabled);
+    grid.style.transform = `${base} translateX(${atEdge ? dx * .3 : dx}px)`;           // the edge feels "heavier"
+  });
+  function end(cancel) {
+    if (!active) return; active = false;
+    if (!drag) return;
+    drag = false; lastDrag = performance.now(); grid.style.transition = "";
+    const fast = Math.abs(dx) / Math.max(1, performance.now() - t0) > .45 && Math.abs(dx) > 30;
+    if (!cancel && (Math.abs(dx) > THRESHOLD || fast)) {
+      const btn = dx < 0 ? next : prev;
+      if (!btn.disabled) { btn.click(); return; }
+    }
+    grid.style.transform = base;                           // not enough: slide back
+  }
+  car.addEventListener("pointerup", () => end(false));
+  car.addEventListener("pointercancel", () => end(true));
+  car.addEventListener("click", e => { if (performance.now() - lastDrag < 400) { e.stopPropagation(); e.preventDefault(); } }, true);   // a swipe is not a tap
+})();
