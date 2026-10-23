@@ -716,3 +716,48 @@ const NEW_BEAT = 0;
   car.addEventListener("pointercancel", () => end(true));
   car.addEventListener("click", e => { if (performance.now() - lastDrag < 400) { e.stopPropagation(); e.preventDefault(); } }, true);   // a swipe is not a tap
 })();
+
+/* ---------- 21. BEAT OF THE WEEK COUNTDOWN ------------------------------
+   Counts down to the next reset (every Friday by default) and starts again
+   by itself: you never have to reset it. Settings: BOTW_TIMER in config.js. */
+function botwTzOffset(ms, tz) {                         // how far the timezone is from UTC at this moment
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: tz, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })
+    .formatToParts(new Date(ms)).map(x => [x.type, x.value]));
+  return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - Math.floor(ms / 1000) * 1000;
+}
+function botwNextEnd(now, cfg) {                        // moment of the next reset (in milliseconds)
+  if (cfg.endsAt) { const t = Date.parse(cfg.endsAt); if (t > now) return t; }       // fixed end date, if you set one
+  const tz = cfg.timeZone || "Europe/Rome", [H, M] = (cfg.time || "00:00").split(":").map(Number);
+  const wall = new Date(now + botwTzOffset(now, tz));   // the clock of that timezone (read with the UTC getters)
+  const nowSec = wall.getUTCHours() * 3600 + wall.getUTCMinutes() * 60 + wall.getUTCSeconds();
+  let delta = ((cfg.weekday ?? 5) - wall.getUTCDay() + 7) % 7;
+  if (delta === 0 && nowSec >= H * 3600 + M * 60) delta = 7;                          // today's reset already passed: next week
+  const guess = Date.UTC(wall.getUTCFullYear(), wall.getUTCMonth(), wall.getUTCDate() + delta, H, M);
+  let ts = guess - botwTzOffset(guess, tz);
+  ts = guess - botwTzOffset(ts, tz);                                                  // correct across summer/winter time changes
+  return ts;
+}
+
+(function () {
+  const cfg = Object.assign({ enabled: true, weekday: 5, time: "00:00", timeZone: "Europe/Rome", endsAt: "" },
+                            typeof BOTW_TIMER !== "undefined" ? BOTW_TIMER : {});
+  const host = $("#botw .bwi .cta");
+  if (!cfg.enabled || !host) return;
+
+  const el = document.createElement("div");
+  el.className = "bw-timer";
+  el.setAttribute("role", "timer");
+  el.setAttribute("aria-label", "Time left for the Beat of the Week");
+  el.innerHTML = '<span class="bw-tl">Ends in</span>' +
+    ["d", "h", "m", "s"].map(u => `<span class="bw-tb"><b data-u="${u}">00</b><i>${u}</i></span>`).join("");
+  host.before(el);
+  const nodes = Object.fromEntries(["d", "h", "m", "s"].map(u => [u, el.querySelector(`[data-u="${u}"]`)]));
+
+  function tick() {
+    const now = Date.now(), s = Math.max(0, Math.floor((botwNextEnd(now, cfg) - now) / 1000));
+    const v = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+    for (const u in v) nodes[u].textContent = String(v[u]).padStart(2, "0");
+    el.classList.toggle("urgent", s < 86400);                                          // last 24 hours
+  }
+  tick(); setInterval(tick, 1000);
+})();

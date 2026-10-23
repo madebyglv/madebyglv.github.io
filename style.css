@@ -2212,3 +2212,17 @@ nav a.nav-cv:hover, nav a.nav-cv:focus-visible { background: var(--grad); border
 }
 
 nav { align-items: center; }
+
+/* ============================================================
+   BEAT OF THE WEEK COUNTDOWN (pairs with section 21 of script.js)
+   To undo: delete this whole block.
+   ============================================================ */
+.bw-timer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+.bw-tl { margin-right: 6px; font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); }
+.bw-tb { display: inline-flex; align-items: baseline; gap: 4px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 99px; background: rgba(255, 255, 255, .03); }
+.bw-tb b { min-width: 2ch; text-align: center; font-family: var(--h); font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; color: var(--fg); }
+.bw-tb i { font-style: normal; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+
+/* last 24 hours: the numbers light up */
+.bw-timer.urgent .bw-tb { border-color: rgba(167, 123, 255, .6); }
+.bw-timer.urgent .bw-tb b { color: var(--acc); }

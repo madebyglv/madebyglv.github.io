@@ -32,7 +32,7 @@ const BEAT_OF_THE_WEEK = {
   beatstars: "https://www.beatstars.com/collection/210759",             // paste the link of the collection / beat here
   youtube:   "https://youtu.be/SGhYwXnw8CU",             // paste the YouTube link of the beat here
   colors:    ["#ff2626", "#8f2626"],      // cover gradient (used if no image)
-  cover:     "images/BOTW2.png"                           // optional image, e.g. "img/botw.jpg"
+  cover:     "images/BOTW3.png"                           // optional image, e.g. "img/botw.jpg"
 };
 
 
