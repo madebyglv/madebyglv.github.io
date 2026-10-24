@@ -30,7 +30,7 @@ const BEAT_OF_THE_WEEK = {
   text:      "One beat from my BeatStars collection “Beat of the Week”, discounted 40%. The pick changes weekly.",
   discount:  40,                          // shows "−40%"
   beatstars: "https://www.beatstars.com/collection/210759",             // paste the link of the collection / beat here
-  youtube:   "https://youtu.be/SGhYwXnw8CU",             // paste the YouTube link of the beat here
+  youtube:   "https://www.youtube.com/watch?v=DIeacGJNjn8",             // paste the YouTube link of the beat here
   colors:    ["#ff2626", "#8f2626"],      // cover gradient (used if no image)
   cover:     "images/BOTW3.png"                           // optional image, e.g. "img/botw.jpg"
 };
@@ -45,10 +45,23 @@ const BEAT_OF_THE_WEEK = {
    beatstars : link of this beat on BeatStars                             */
 const BEATS = [
   {
+  title:     "Barbados",
+  bpm:       80,
+  key:       "Bm",
+  genre:     "Drake & JCole",
+  tags:      ["Drake", "J Cole", "Sample"],
+  colors:    ["#26308f", "#ff2bd6"],
+  cover:     "images/barbadoscover.png",
+  audio:     "audio/barbadospreviewprodglv.mp3",
+  youtube:   "https://youtu.be/OeXvLvYcDbw",
+  beatstars: "https://bsta.rs/95r2zP"
+  }
+  ,{
     title:     "Love Me",
     bpm:       135,
     key:       "Am",
     genre:     "Travis Scott & Don Toliver",
+    tags:      ["Don Toliver", "Travis Scott", "Hyperpop"],
     colors:    ["#26308f", "#ff2bd6"],
     cover:     "images/lovemecover1.jpg",
     audio:     "audio/lovemepreview.mp3",
@@ -60,6 +73,7 @@ const BEATS = [
     bpm:       140,
     key:       "Cm",
     genre:     "Drake",
+    tags:      ["Drake", "OVO", "Soul"],
     colors:    ["#26308f", "#ff2bd6"],
     cover:     "images/2amcover.png",
     audio:     "audio/2ampreviewprodglv.mp3",
@@ -71,6 +85,7 @@ const BEATS = [
     bpm:       126,
     key:       "F#m",
     genre:     "Drake",
+    tags:      ["Drake", "interlude", "R&B"],
     colors:    ["#26308f", "#ff2bd6"],
     cover:     "images/igmcover.png",
     audio:     "audio/interludemaybepreview.mp3",
@@ -82,6 +97,7 @@ const BEATS = [
     bpm:       160,
     key:       "Fm",
     genre:     "Drake & Don Toliver",
+    tags:      ["Drake", "Don Toliver", "R&B"],
     colors:    ["#26308f", "#ff2bd6"],
     cover:     "images/holdonme.png",
     audio:     "audio/holdonmepreviewprodglv.mp3",
@@ -93,6 +109,7 @@ const BEATS = [
     bpm:       86,
     key:       "Cm",
     genre:     "Drake",
+    tags:      ["Drake", "OVO", "R&B"],
     colors:    ["#26308f", "#ff2bd6"],
     cover:     "images/cfucover.jpg",
     audio:     "audio/cfupreviewprodglv.mp3",
@@ -104,6 +121,7 @@ const BEATS = [
     bpm:       117,
     key:       "F#m",
     genre:     "Drake",
+    tags:      ["Drake", "FOMO", "R&B"],
     colors:    ["#26308f", "#ff2bd6"],
     cover:     "images/fomocover.png",
     audio:     "audio/needmepreviewprodglv.mp3",
@@ -115,6 +133,7 @@ const BEATS = [
     bpm:       70,
     key:       "Cm",
     genre:     "Drake",
+    tags:      ["Drake", "R&B", "FOMO"],
     colors:    ["#26308f", "#ff2bd6"],
     cover:     "images/fomocover.png",
     audio:     "audio/damagedonepreviewprodglv.mp3",
@@ -126,6 +145,7 @@ const BEATS = [
     bpm:       138,
     key:       "Fm",
     genre:     "Drake",
+    tags:      ["Drake", "R&B", "FOMO"],
     colors:    ["#26308f", "#ff2bd6"],
     cover:     "images/fomocover.png",
     audio:     "audio/feltrightpreviewprodglv.mp3",
@@ -187,3 +207,21 @@ const BEATS_BANNER = {
   linkText: "Discover now",
   link:     "https://www.beatstars.com/prodglv"
 };
+
+   const BOTW_TIMER = {
+     enabled:  true,
+     weekday:  5,              // 0 = domenica, 1 = lunedì ... 5 = venerdì ... 6 = sabato
+     time:     "00:00",        // a che ora parte la nuova settimana, es. "18:00"
+     timeZone: "Europe/Rome",
+     endsAt:   ""              // facoltativo, vedi sotto
+   };
+
+   const PROMO = {
+     enabled:  true,
+     code:     "10PGLV",
+     title:    "Special offer",
+     text:     "10% off on Premium & Stems licenses.",
+     image:    "images/promoimg.jpg",
+     link:     "https://www.beatstars.com/prodglv",
+     linkText: "Go to BeatStars"
+   };

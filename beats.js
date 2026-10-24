@@ -239,35 +239,6 @@ $$("#nav a").forEach(a => a.onclick = () => $("#nav").classList.remove("open"));
   });
 })();
 
-/* ---------- 6. BANNER UNDER THE TITLE (beats page) ---------------------
-   A slim, minimal banner. By default it promotes the Beat of the Week.
-   To change the text or link, add BEATS_BANNER to config.js (see below),
-   or set enabled: false to hide it.                                       */
-(function () {
-  const botw = typeof BEAT_OF_THE_WEEK !== "undefined" ? BEAT_OF_THE_WEEK : null;
-  const cfg = Object.assign({
-    enabled:  true,
-    label:    "Beat of the Week",
-    text:     "A new pick every week, discounted on BeatStars.",
-    badge:    botw ? "−" + botw.discount + "%" : "",
-    linkText: "See it",
-    link:     botw ? botw.beatstars : BEATSTARS_STORE
-  }, typeof BEATS_BANNER !== "undefined" ? BEATS_BANNER : {});
-  if (!cfg.enabled) return;
-
-  const a = document.createElement("a");
-  a.className = "bn";
-  a.href = cfg.link;
-  if (/^https?:/.test(cfg.link)) { a.target = "_blank"; a.rel = "noopener"; }
-  a.innerHTML =
-    `<span class="bn-dot" aria-hidden="true"></span>` +
-    `<span class="bn-lab">${cfg.label}</span>` +
-    (cfg.badge ? `<span class="bn-badge">${cfg.badge}</span>` : "") +
-    `<span class="bn-txt">${cfg.text}</span>` +
-    `<span class="bn-go">${cfg.linkText} <b aria-hidden="true">→</b></span>`;
-  $(".bp .sh").after(a);
-})();
-
 /* ---------- 7. BEATS LIST: CASCADE ENTRANCE + HOVER FLASH --------------
    Gives each row its position (for the cascade delay) and tells the CSS
    where the mouse entered the row (the white flash starts there).          */
@@ -278,3 +249,80 @@ list.addEventListener("pointerover", e => {
   const b = r.getBoundingClientRect();
   r.style.setProperty("--mx", (e.clientX - b.left) / b.width * 100 + "%");
 });
+
+/* ---------- 8. SEARCH BAR + FILTER (beats page) -------------------------
+   A search bar that is always visible and centered, with a "Filter" button
+   that shows all the tags. Search by name (it also looks at genre and tags).
+   Each beat shows at most MAX_TAGS tags (the first ones in config.js).       */
+(function () {
+  const MODE = "all";            // "all": a beat must have EVERY selected tag  |  "any": at least one of them
+  const MAX_TAGS = 3;            // tags shown for each beat
+
+  BEATS.forEach(b => { if (b.tags) b.tags = b.tags.slice(0, MAX_TAGS); });
+  $$(".bl-row").forEach(r => {                                   // redraw the tags of every row (max 3)
+    r.querySelector(".bl-tags").innerHTML = (BEATS[r.dataset.i].tags || []).map(t => `<button class="bl-tag" data-t="${t}">${t}</button>`).join("");
+  });
+
+  const count = {};
+  BEATS.forEach(b => (b.tags || []).forEach(t => count[t] = (count[t] || 0) + 1));
+  const tags = Object.keys(count).sort((a, b) => count[b] - count[a] || a.localeCompare(b));
+  const sel = new Set(); let query = "";
+
+  const host = document.createElement("div");
+  host.className = "srch"; host.setAttribute("role", "search");
+  host.innerHTML = `
+    <div class="srch-bar">
+      <svg class="srch-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input type="search" class="srch-q" placeholder="Search beats…" aria-label="Search beats" autocomplete="off">
+      <button class="srch-x" aria-label="Clear search" hidden>✕</button>
+      ${tags.length ? `<button class="srch-tg" aria-expanded="false" aria-label="Filter by tag">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+        <span>Filter</span><b></b></button>` : ""}
+    </div>
+    <div class="srch-sel"></div>
+    <div class="srch-pop" hidden>
+      <div class="srch-ph"><span>Filter by tag</span><button class="srch-clr">Clear tags</button></div>
+      <div class="srch-chips">${tags.map(t => `<button class="chip" data-t="${t}">${t} <i>${count[t]}</i></button>`).join("")}</div>
+    </div>`;
+  $("#tagChips").before(host);
+
+  const $h = s => host.querySelector(s);
+  const input = $h(".srch-q"), pop = $h(".srch-pop"), tg = $h(".srch-tg"), x = $h(".srch-x");
+
+  /* ----- filtering ----- */
+  function apply() {
+    const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean), need = [...sel]; let n = 0;
+    $$(".bl-row").forEach(r => {
+      const b = BEATS[r.dataset.i], bt = b.tags || [], hay = [b.title, b.genre, ...bt].join(" ").toLowerCase();
+      const okQ = terms.every(t => hay.includes(t));
+      const okT = !need.length || (MODE === "all" ? need.every(t => bt.includes(t)) : need.some(t => bt.includes(t)));
+      r.hidden = !(okQ && okT); if (okQ && okT) n++;
+    });
+    $("#count").textContent = "(" + n + ")";
+    const e = $("#empty"); e.hidden = n > 0; e.textContent = "No beats match your search.";
+  }
+  function render() {
+    $h(".srch-sel").innerHTML = [...sel].map(t => `<span class="srch-pill">${t}<button data-r="${t}" aria-label="Remove ${t}">✕</button></span>`).join("");
+    $$(".srch-chips .chip").forEach(c => c.classList.toggle("on", sel.has(c.dataset.t)));
+    if (tg) { tg.querySelector("b").textContent = sel.size || ""; tg.classList.toggle("has", sel.size > 0); }
+    x.hidden = !query;
+  }
+  function setPop(on) { pop.hidden = !on; if (tg) tg.setAttribute("aria-expanded", on); }
+
+  /* ----- events ----- */
+  input.addEventListener("input", () => { query = input.value; render(); apply(); });
+  input.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    if (!pop.hidden) setPop(false); else if (query) { input.value = query = ""; render(); apply(); }
+  });
+  x.onclick = () => { input.value = query = ""; render(); apply(); input.focus(); };
+  if (tg) tg.onclick = () => setPop(pop.hidden);
+  $h(".srch-clr").onclick = () => { sel.clear(); render(); apply(); };
+  $h(".srch-chips").onclick = e => { const c = e.target.closest(".chip"); if (!c) return; sel.has(c.dataset.t) ? sel.delete(c.dataset.t) : sel.add(c.dataset.t); render(); apply(); };
+  $h(".srch-sel").onclick = e => { const r = e.target.closest("[data-r]"); if (!r) return; sel.delete(r.dataset.r); render(); apply(); };
+  document.addEventListener("click", e => { if (!pop.hidden && !host.contains(e.target)) setPop(false); });
+
+  // clicking a tag inside a row selects it
+  applyTag = function (t) { sel.clear(); if (t !== "All") sel.add(t); render(); apply(); };
+  render();
+})();

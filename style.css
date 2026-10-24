@@ -2017,49 +2017,6 @@ body.has-player .bp { padding-bottom: 240px; }          /* keeps the last rows a
 .cv-pw.shake { animation: cv-shake .4s; }
 @keyframes cv-shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
 
-/* ============================================================
-   BANNER OF THE BEATS PAGE (pairs with section 6 of beats.js)
-   To undo: delete this whole block.
-   ============================================================ */
-.bn {
-  --fill: linear-gradient(90deg, rgba(157, 63, 240, .30), rgba(90, 43, 255, .12));
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin: 0 0 28px;
-  padding: 12px 12px 12px 20px;
-  border: 1px solid var(--line);
-  border-radius: 99px;
-  text-decoration: none;
-  color: var(--fg);
-  font-size: 13px;
-  background-color: rgba(255, 255, 255, .03);
-  background-image: var(--fill);
-  background-repeat: no-repeat;
-  background-position: left;
-  background-size: 0 100%;                        /* the purple fill "loads" on hover */
-  transition: background-size .8s cubic-bezier(.65, 0, .25, 1), border-color .4s;
-}
-.bn:hover, .bn:focus-visible { background-size: 100% 100%; border-color: rgba(167, 123, 255, .6); }
-
-.bn-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--acc); box-shadow: 0 0 0 0 rgba(167, 123, 255, .6); animation: bn-pulse 2.4s ease-out infinite; flex: none; }
-@keyframes bn-pulse { 70%, 100% { box-shadow: 0 0 0 9px rgba(167, 123, 255, 0); } }
-
-.bn-lab { font-family: var(--h); font-weight: 700; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
-.bn-badge { padding: 3px 10px; border-radius: 99px; background: var(--grad); color: #fff; font-family: var(--h); font-weight: 700; font-size: 10px; letter-spacing: .06em; white-space: nowrap; }
-.bn-txt { flex: 1; min-width: 0; color: #c9c9ce; }
-.bn-go { display: flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 99px; border: 1px solid var(--line); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; white-space: nowrap; transition: border-color .3s; }
-.bn-go b { font-weight: 400; font-size: 15px; transition: transform .4s; }
-.bn:hover .bn-go b, .bn:focus-visible .bn-go b { transform: translateX(5px) rotate(-45deg); }
-.bn:hover .bn-go { border-color: rgba(255, 255, 255, .5); }
-
-@media (max-width: 760px) {
-  .bn { flex-wrap: wrap; border-radius: 22px; padding: 14px 16px; row-gap: 8px; }
-  .bn { gap: 8px 10px; }
-  .bn-lab { font-size: 9px; letter-spacing: .1em; }
-  .bn-go { margin-left: auto; padding: 6px 11px; letter-spacing: .12em; gap: 6px; }   /* "See it" stays on the first row */
-  .bn-txt { flex: 1 1 100%; order: 5; }
-}
 
 /* ============================================================
    BEATS LIST: CASCADE + HOVER FLASH   |   ARTWORK VIEWER
@@ -2226,3 +2183,64 @@ nav { align-items: center; }
 /* last 24 hours: the numbers light up */
 .bw-timer.urgent .bw-tb { border-color: rgba(167, 123, 255, .6); }
 .bw-timer.urgent .bw-tb b { color: var(--acc); }
+
+/* /* ============================================================
+   SEARCH BAR + FILTER OF THE BEATS PAGE (pairs with section 8 of beats.js)
+   REPLACES the earlier "SEARCH ON THE BEATS PAGE" CSS block.
+   To undo: delete this whole block.
+   ============================================================ */
+#tagChips { display: none !important; }                  /* the old row of tags is replaced by the filter */
+
+.srch { position: relative; max-width: 720px; margin: 0 auto 30px; }
+.srch-bar {
+  display: flex; align-items: center; gap: 10px; height: 54px; padding: 0 8px 0 20px;
+  border: 1px solid var(--line); border-radius: 99px; background: rgba(255, 255, 255, .04);
+  transition: border-color .3s, background .3s;
+}
+.srch-bar:hover { border-color: rgba(255, 255, 255, .4); }
+.srch-bar:focus-within { border-color: rgba(167, 123, 255, .65); background: rgba(255, 255, 255, .06); }
+.srch-ico { flex: none; color: var(--dim); }
+.srch-q { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: var(--fg); font: inherit; font-size: 15px; }
+.srch-q::placeholder { color: #9b9ba3; }
+.srch-q::-webkit-search-cancel-button { display: none; }
+
+.srch-x { flex: none; width: 30px; height: 30px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .08); color: var(--fg); font-size: 11px; cursor: pointer; transition: background .3s; }
+.srch-x:hover { background: rgba(255, 255, 255, .2); }
+
+.srch-tg {
+  flex: none; display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px;
+  border: 1px solid var(--line); border-radius: 99px; background: none; color: var(--fg); cursor: pointer;
+  font: inherit; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; transition: background .3s, border-color .3s;
+}
+.srch-tg:hover, .srch-tg[aria-expanded="true"] { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .45); }
+.srch-tg.has { border-color: rgba(167, 123, 255, .7); }
+.srch-tg b { font-weight: 600; color: var(--acc); }
+
+.srch-sel { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.srch-sel:not(:empty) { margin-top: 14px; }
+.srch-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 7px 5px 14px; border-radius: 99px; background: var(--grad); color: #fff; font-size: 12px; white-space: nowrap; }
+.srch-pill button { width: 18px; height: 18px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .25); color: #fff; font-size: 9px; cursor: pointer; }
+
+.srch-pop {
+  position: absolute; left: 0; right: 0; top: 62px; z-index: 15; padding: 18px;
+  border: 1px solid rgba(255, 255, 255, .2); border-radius: 18px; background: rgba(14, 14, 20, .96);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: 0 24px 60px rgba(0, 0, 0, .55);
+  animation: srch-in .3s cubic-bezier(.2, .8, .2, 1);
+}
+.srch-pop[hidden] { display: none; }
+@keyframes srch-in { from { opacity: 0; transform: translateY(-8px); } }
+.srch-ph { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--dim); }
+.srch-clr { border: 0; background: none; color: var(--acc); font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; text-decoration: underline; }
+.srch-chips { display: flex; flex-wrap: wrap; gap: 8px; max-height: 280px; overflow: auto; }
+.srch-chips .chip { display: inline-flex; gap: 8px; align-items: center; }
+.srch-chips .chip i { font-style: normal; font-size: 10px; opacity: .6; }
+.srch-chips .chip.on { background: var(--grad); border-color: transparent; color: #fff; }
+
+/* tags in each beat line (max 3, one under the other when the line is narrow) */
+.bl-tags { gap: 6px; }
+.bl-tag { white-space: nowrap; }
+
+@media (max-width: 620px) {
+  .srch-bar { height: 50px; padding-left: 16px; }
+  .srch-tg { padding: 0 12px; letter-spacing: .08em; }
+}
