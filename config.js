@@ -54,7 +54,7 @@ const BEATS = [
   cover:     "images/barbadoscover.png",
   audio:     "audio/barbadospreviewprodglv.mp3",
   youtube:   "https://youtu.be/OeXvLvYcDbw",
-  beatstars: "https://www.beatstars.com/prodglv"
+  beatstars: "https://bsta.rs/Gfdw8T"
   }
   ,{
     title:     "Love Me",
