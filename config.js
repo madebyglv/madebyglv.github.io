@@ -32,7 +32,7 @@ const BEAT_OF_THE_WEEK = {
   beatstars: "https://www.beatstars.com/collection/210759",             // paste the link of the collection / beat here
   youtube:   "https://www.youtube.com/watch?v=DIeacGJNjn8",             // paste the YouTube link of the beat here
   colors:    ["#ff2626", "#8f2626"],      // cover gradient (used if no image)
-  cover:     "images/BOTW3.png"                           // optional image, e.g. "img/botw.jpg"
+  cover:     "images/BOTW4.png"                           // optional image, e.g. "img/botw.jpg"
 };
 
 
@@ -45,6 +45,18 @@ const BEAT_OF_THE_WEEK = {
    beatstars : link of this beat on BeatStars                             */
 const BEATS = [
   {
+  title:     "Worried",
+  bpm:       107,
+  key:       "Am",
+  genre:     "Drake Interlude",
+  tags:      ["Drake", "interlude", "Yebba"],
+  colors:    ["#26308f", "#ff2bd6"],
+  cover:     "images/worriedcover.png",
+  audio:     "audio/worriedpreviewprodglv.mp3",
+  youtube:   "https://youtu.be/atd-LuAkd3M",
+  beatstars: "https://bsta.rs/sUzuT7"
+  }
+  ,{
   title:     "Barbados",
   bpm:       80,
   key:       "Bm",
